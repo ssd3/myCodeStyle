@@ -1,0 +1,105 @@
+scalar Date
+scalar JSON
+
+type DeleteResult {
+    deletedIds: [Int]
+    affected: Int
+}
+
+type User {
+    id: ID!
+    userName: String!
+    firstName: String
+    lastName: String
+    email: String
+    phone: String
+    isSuperuser: Boolean!
+    isStaff: Boolean!
+    isCustomer: Boolean!
+    isActive: Boolean!
+    createdAt: Date!
+}
+
+type UserResult {
+    users: [User]
+    totalCount: Int
+}
+
+input UserCreateInput {
+    userName: String!
+    firstName: String
+    lastName: String
+    email: String!
+    phone: String
+    password: String
+    isSuperuser: Boolean!
+    isStaff: Boolean!
+    isCustomer: Boolean!
+    isActive: Boolean!
+}
+
+input UserUpdateInput {
+    id: ID!
+    userName: String
+    firstName: String
+    lastName: String
+    email: String
+    phone: String
+    isSuperuser: Boolean
+    isStaff: Boolean
+    isCustomer: Boolean
+    isActive: Boolean
+}
+
+input UserChangePasswordInput {
+    id: ID!
+    password: String!
+    newPassword: String!
+}
+
+input UserChangeEmailInput {
+    id: ID!
+    email: String!
+    newEmail: String!
+}
+
+input UserFilterInput {
+    page: Int!
+    perPage: Int!
+    sortField: String
+    sortOrder: JSON
+    userId: ID
+    userIds: [ID]
+    userName: String
+    firstName: String
+    lastName: String
+    email: String
+    phone: String
+    isSuperuser: Boolean
+    isStaff: Boolean
+    isCustomer: Boolean
+    isActive: Boolean
+    createdAt: Date
+}
+
+input UserLoginInput {
+    username: String!
+    password: String!
+    remember: Boolean
+}
+
+type Query {
+    users(filter: UserFilterInput!): UserResult @auth(requires: [ADMIN])
+    userById(id: ID!): User @auth(requires: [ADMIN])
+    userByEmail(email: String!): User @auth(requires: [ADMIN])
+    userByUsername(userName: String!): User @auth(requires: [ADMIN])
+    userLogin(input: UserLoginInput!): Boolean
+}
+
+type Mutation {
+    userCreate(input: UserCreateInput!): User @auth(requires: [ADMIN])
+    userUpdate(input: UserUpdateInput!): User @auth(requires: [ADMIN])
+    userChangePassword(input: UserChangePasswordInput!): User @auth(requires: [ADMIN])
+    userChangeEmail(input: UserChangeEmailInput!): User @auth(requires: [ADMIN])
+    userDelete(id: ID!): DeleteResult @auth(requires: [ADMIN])
+}
